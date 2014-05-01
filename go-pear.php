@@ -53,7 +53,7 @@ ini_set('magic_quotes_runtime', false);
 error_reporting( E_ALL & ~E_NOTICE);
 
 define('WINDOWS', (substr(PHP_OS, 0, 3) == 'WIN'));
-define('GO_PEAR_VER', '1.1.6');
+define('GO_PEAR_VER', '1.1.7a1');
 
 define('WIN32GUI', !WEBINSTALLER && WINDOWS && $sapi_name=='cli' && which('cscript'));
 
@@ -1114,6 +1114,8 @@ function download_url($url, $destfile = null, $proxy = null)
     $cdh = "content-disposition:";
     $cdhl = strlen($cdh);
     $content_length = 0;
+    $status_code = null;
+    $location = null;
     while ($line = fgets($fp, 2048)) {
         if (trim($line) == '') {
             break;
@@ -1126,6 +1128,15 @@ function download_url($url, $destfile = null, $proxy = null)
                 $destfile = basename($matches[1]);
             }
         }
+        if (preg_match('/^HTTP\/1\.1 ([0-9]{3})/i', $line, $matches)) {
+            $status_code = intval($matches[1]);
+        }
+        if (preg_match('/^Location: (.*)$/i', $line, $matches)) {
+            $location = trim($matches[1]);
+        }
+    }
+    if ($status_code && 300 <= $status_code && $status_code < 400 && $location && $location != $url) {
+        return download_url($location, $destfile, $proxy);
     }
 
     displayHTMLSetDownload($destfile);
