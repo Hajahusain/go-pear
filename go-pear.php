@@ -53,7 +53,7 @@ ini_set('magic_quotes_runtime', false);
 error_reporting( E_ALL & ~E_NOTICE);
 
 define('WINDOWS', (substr(PHP_OS, 0, 3) == 'WIN'));
-define('GO_PEAR_VER', '1.1.7a1');
+define('GO_PEAR_VER', '1.1.7a2');
 
 define('WIN32GUI', !WEBINSTALLER && WINDOWS && $sapi_name=='cli' && which('cscript'));
 
@@ -113,10 +113,10 @@ Thank you for your coopertion and sorry for the inconvenience!
 $gopear_bundle_dir = dirname(__FILE__).'/go-pear-bundle';
 
 $bootstrap_files = array(
-    'PEAR5.php'            => 'https://raw.github.com/pear/pear-core/master/PEAR5.php',
-    'PEAR.php'             => 'https://raw.github.com/pear/pear-core/master/PEAR.php',
-    'Archive/Tar.php'      => 'https://raw.github.com/pear/Archive_Tar/master/Archive/Tar.php',
-    'Console/Getopt.php'   => 'https://raw.github.com/pear/Console_Getopt/trunk/Console/Getopt.php',
+    'PEAR5.php'            => 'https://raw.githubusercontent.com/pear/pear-core/master/PEAR5.php',
+    'PEAR.php'             => 'https://raw.githubusercontent.com/pear/pear-core/master/PEAR.php',
+    'Archive/Tar.php'      => 'https://raw.githubusercontent.com/pear/Archive_Tar/master/Archive/Tar.php',
+    'Console/Getopt.php'   => 'https://raw.githubusercontent.com/pear/Console_Getopt/trunk/Console/Getopt.php',
 );
 
 $bootstrap_pkgs = array( // uses URL like http://pear.php.net/get/%s
