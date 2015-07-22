@@ -50,10 +50,11 @@ define('WEBINSTALLER', ($sapi_name != 'cli' && !(substr($sapi_name,0,3)=='cgi' &
 ini_set('track_errors', true);
 ini_set('html_errors', WEBINSTALLER);
 ini_set('magic_quotes_runtime', false);
-error_reporting( E_ALL & ~E_NOTICE);
+//error_reporting( E_ALL & ~E_NOTICE);
+error_reporting( E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT ); // for PHP 5.3+
 
 define('WINDOWS', (substr(PHP_OS, 0, 3) == 'WIN'));
-define('GO_PEAR_VER', '1.1.7a2');
+define('GO_PEAR_VER', '1.1.7a3');
 
 define('WIN32GUI', !WEBINSTALLER && WINDOWS && $sapi_name=='cli' && which('cscript'));
 
@@ -116,7 +117,7 @@ $bootstrap_files = array(
     'PEAR5.php'            => 'https://raw.githubusercontent.com/pear/pear-core/master/PEAR5.php',
     'PEAR.php'             => 'https://raw.githubusercontent.com/pear/pear-core/master/PEAR.php',
     'Archive/Tar.php'      => 'https://raw.githubusercontent.com/pear/Archive_Tar/master/Archive/Tar.php',
-    'Console/Getopt.php'   => 'https://raw.githubusercontent.com/pear/Console_Getopt/trunk/Console/Getopt.php',
+    'Console/Getopt.php'   => 'https://raw.githubusercontent.com/pear/Console_Getopt/master/Console/Getopt.php',
 );
 
 $bootstrap_pkgs = array( // uses URL like http://pear.php.net/get/%s
@@ -1064,16 +1065,16 @@ function download_url($url, $destfile = null, $proxy = null)
     if ($tmp['scheme'] == 'https' || $tmp['scheme'] == 'ssl') {
         $tmp['port'] = 443;
         $isSSL = true;
-	}
+    }
     
     if (empty($tmp['port'])) {
         $tmp['port'] = 80;
     }
     if (empty($proxy)) {
-		if ($isSSL) {
-			$fp = fsockopen("ssl://$tmp[host]", $tmp['port'], $errno, $errstr);
-		} else {
-			$fp = fsockopen($tmp['host'], $tmp['port'], $errno, $errstr);
+        if ($isSSL) {
+            $fp = fsockopen("ssl://$tmp[host]", $tmp['port'], $errno, $errstr);
+        } else {
+            $fp = fsockopen($tmp['host'], $tmp['port'], $errno, $errstr);
         }
         // print "\nconnecting to $tmp[host]:$tmp[port]\n";
     } else {
@@ -1090,10 +1091,10 @@ function download_url($url, $destfile = null, $proxy = null)
     if (empty($proxy)) {
         $path = $tmp['path'];
     } else {
-		if ($isSSL) {
-			$path = "ssl://$tmp[host]:$tmp[port]$tmp[path]";
-		} else {
-			$path = "http://$tmp[host]:$tmp[port]$tmp[path]";
+        if ($isSSL) {
+            $path = "ssl://$tmp[host]:$tmp[port]$tmp[path]";
+        } else {
+            $path = "http://$tmp[host]:$tmp[port]$tmp[path]";
         }
     }
     if (isset($tmp['query'])) {
@@ -1875,11 +1876,11 @@ function displayHTML($page = 'Welcome', $data = array())
             <form action="<?php echo basename(__FILE__);?>?step=install" method="post">
         <!-- Packages stuff -->
         <span class="title">Packages</span>
-	    <p>
+        <p>
         The following PEAR packages will be installed. You can select some optional<br />
         packages to be installed by go-pear too:<br />
         </p>
-	    <table border="0">
+        <table border="0">
         <tr>
         <th>&nbsp;</th><th>Package</th><th width="65%">Description</th>
         </tr><tr>
@@ -1907,13 +1908,13 @@ function displayHTML($page = 'Welcome', $data = array())
 
         <!-- Configuration stuff -->
         <span class="title">Configuration</span>
-	    <p>
+        <p>
             Below is a suggested file layout for your new PEAR installation.
         </p>
 
         <!--
-	    <p>
-	    <table border="0">
+        <p>
+        <table border="0">
               <tr>
                 <td valign="top"><img src="<?php echo basename(__FILE__); ?>?action=img&amp;img=note" /></td>
                 <td>
@@ -1924,7 +1925,7 @@ function displayHTML($page = 'Welcome', $data = array())
                 </td>
               </tr>
             </table>
-	    </p>
+        </p>
         -->
 
             <table border="0" width="80%">
@@ -1961,10 +1962,10 @@ function displayHTML($page = 'Welcome', $data = array())
         }
 ?>
             </table>
-	    </p>
-	    <hr />
+        </p>
+        <hr />
 
-	    <!-- Optional stuff -->
+        <!-- Optional stuff -->
         <span class="title">Optional:</span>
 
         <ul>
@@ -1973,7 +1974,7 @@ function displayHTML($page = 'Welcome', $data = array())
             <input type="text" name="proxy[host]" value="<?php echo $proxy_host;?>"> : <input type="text" name="proxy[port]" value="<?php echo $proxy_port;?>" size="6">
             </p>
 
-	        <p>
+            <p>
             <li />Compatibility-Mode for old non-DOM Browsers <input type="checkbox" name="BCmode" id="BCmode" checked>
             <script type="text/javascript">
             <!--
@@ -1982,13 +1983,13 @@ function displayHTML($page = 'Welcome', $data = array())
                 };
             // -->
             </script>
-	        </p>
+            </p>
         </ul>
 
 <?php
         if (WINDOWS && phpversion() == '4.1.1') {
 ?>
-		    <p>
+            <p>
                     <table border="0">
                       <tr>
                         <td valign="top"><img src="<?php echo basename(__FILE__); ?>?action=img&amp;img=note" alt="" /></td>
@@ -2000,13 +2001,13 @@ function displayHTML($page = 'Welcome', $data = array())
                         </td>
                       </tr>
                     </table>
-		    </p>
+            </p>
 <?php
         }
 ?>
         <hr />
-	    <!-- Closing note -->
-	    <p>
+        <!-- Closing note -->
+        <p>
             <table border="0">
               <tr>
                 <td valign="top"><img src="<?php echo basename(__FILE__); ?>?action=img&amp;img=note" alt="" /></td>
@@ -2019,7 +2020,7 @@ function displayHTML($page = 'Welcome', $data = array())
                 </td>
               </tr>
             </table>
-	    </p>
+        </p>
 
             <input type="submit" value="Install" onClick="javascript: submitButton.value='Downloading and installing ... please wait ...'" name="submitButton">
             </form>
