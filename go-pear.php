@@ -51,10 +51,17 @@ ini_set('track_errors', true);
 ini_set('html_errors', WEBINSTALLER);
 ini_set('magic_quotes_runtime', false);
 //error_reporting( E_ALL & ~E_NOTICE);
-error_reporting( E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT ); // for PHP 5.3+
+$error_level = E_ALL & ~E_NOTICE;
+if ( defined( 'E_STRICT' ) ) {
+    $error_level &= ~E_STRICT; // for PHP 5+
+}
+if ( defined( 'E_DEPRECATED' ) ) {
+    $error_level &= ~E_DEPRECATED; // for PHP 5.3.0+
+}
+error_reporting( $error_level );
 
 define('WINDOWS', (substr(PHP_OS, 0, 3) == 'WIN'));
-define('GO_PEAR_VER', '1.1.7a3');
+define('GO_PEAR_VER', '1.1.7a4');
 
 define('WIN32GUI', !WEBINSTALLER && WINDOWS && $sapi_name=='cli' && which('cscript'));
 
